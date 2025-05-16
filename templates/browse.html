@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Compose Files</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto p-6">
+        <h1 class="text-3xl font-bold mb-6 text-gray-800">Browse Compose Files</h1>
+        
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <h2 class="text-xl font-semibold mb-4">Current Directory: {{ current_dir }}</h2>
+            
+            <div class="mb-4">
+                {% if parent_dir %}
+                    <a href="{{ url_for('browse_files', path=parent_dir) }}" 
+                       class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                        Go to Parent Directory
+                    </a>
+                {% endif %}
+            </div>
+            
+            <form action="{{ url_for('browse_files') }}" method="POST">
+                <div class="space-y-4">
+                    {% if directories %}
+                        <h3 class="text-lg font-medium">Directories</h3>
+                        <ul class="space-y-2">
+                            {% for dir in directories %}
+                                <li>
+                                    <a href="{{ url_for('browse_files', path=current_dir + '/' + dir) }}" 
+                                       class="text-blue-500 hover:underline">{{ dir }}/</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    
+                    {% if files %}
+                        <h3 class="text-lg font-medium">Compose Files</h3>
+                        <ul class="space-y-2">
+                            {% for file in files %}
+                                <li class="flex items-center gap-2">
+                                    <input type="radio" name="selected_file" value="{{ current_dir + '/' + file }}" 
+                                           id="{{ file }}" class="focus:ring-blue-500">
+                                    <label for="{{ file }}">{{ file }}</label>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-gray-600">No compose files found in this directory.</p>
+                    {% endif %}
+                </div>
+                
+                {% if files %}
+                    <div class="mt-4">
+                        <button type="submit" 
+                                class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
+                            Select File
+                        </button>
+                    </div>
+                {% endif %}
+            </form>
+            
+            <div class="mt-4">
+                <a href="{{ url_for('home') }}" 
+                   class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
+                    Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
